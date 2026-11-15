@@ -31,6 +31,8 @@ macOS / Linux :
 mkdir -p out
 javac -cp "lib/mazing.jar" -d out MonProgramme.java
 ```
+new comand for compile the project (in Linux)
+javac -cp "lib/mazing.jar:." -d out Main.java model/*.java view/*.java controller/*.java
 
 Windows :
 
@@ -46,6 +48,9 @@ macOS / Linux :
 ```sh
 java -cp "out:resources:lib/mazing.jar" MonProgramme
 ```
+
+new comand for execute the project (in Linux)
+java -cp "out:resources:lib/mazing.jar" Main
 
 Windows :
 
