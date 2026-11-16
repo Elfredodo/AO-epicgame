@@ -7,6 +7,9 @@ import view.GameView;
 import javax.swing.JPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
 public class GameController {
     private final CrusaderModel model;
@@ -45,6 +48,22 @@ public class GameController {
                 char c = Character.toLowerCase(e.getKeyChar());
                 if (c == 'w' || c == 'a' || c == 's' || c == 'd') {
                     commandManager.addCommand(model::stop);
+                }
+            }
+        });
+
+        panel.addMouseListener(new MouseAdapter() {
+            @Override 
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    commandManager.addCommand(() -> model.attack(true));
+                }
+            }
+
+             @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    commandManager.addCommand(() -> model.attack(false));
                 }
             }
         });

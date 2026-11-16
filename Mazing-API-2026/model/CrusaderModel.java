@@ -12,6 +12,7 @@ public class CrusaderModel implements Subject{
     private Orientation orientation;
     private boolean moving;
     private final List<Observer> observers;
+    private boolean attacking; 
 
     public CrusaderModel(double startX, double startY, double startZ) {
         this.x = startX;
@@ -37,11 +38,24 @@ public class CrusaderModel implements Subject{
         }
     }
 
+    public void attack(boolean hit){
+        this.attacking = hit; 
+        notifyObservers(); 
+    }
+
+    public void stopAttack() {
+        if (this.attacking) {
+            this.attacking = false; 
+            notifyObservers();
+        }
+    }
+
     public double getX() { return x; }
     public double getY() { return y; }
     public double getZ() { return z; }
     public Orientation getOrientation() { return orientation; }
     public boolean isMoving() { return moving; }
+    public boolean isAttacking() { return attacking;} 
 
     @Override
     public void addObserver(Observer observer) {

@@ -18,6 +18,10 @@ public class GameView implements Observer {
     private final AnimatedEntity crusaderEntity;
     //private final FootstepSound footstepSound;
     private boolean currentlyWalking = false;
+    private boolean currentlyAttacking = false;
+    private int attackFramesLeft = 0;
+    private static final int ATTACK_FRAMES = 15; // number of frames to play during attack 
+
 
     public GameView(CrusaderModel model) {
         // Create the scene (window width, window height, grid width, grid height)
@@ -62,10 +66,30 @@ public class GameView implements Observer {
                 crusaderEntity.setSprite(AnimatedSprites.CRUSADER_IDLE);
                 currentlyWalking = false;
             }
+            
+
+            // Attack 
+            crusaderEntity.setAnimationFrameListener(frame -> {
+                if (attackFramesLeft > 0) {
+                    attackFramesLeft--; //decrementation to avoid infinite loop
+                    if (attackFramesLeft == 0) {
+                        crusaderEntity.setSprite(AnimatedSprites.CRUSADER_IDLE);
+                        model.stopAttack();   // put isAttack at false when no frames left
+                    }
+                }
+            });
+
+            // Starting an attack 
+            if (model.isAttacking() && attackFramesLeft == 0) {
+                crusaderEntity.setSprite(AnimatedSprites.CRUSADER_ATTACK);
+                attackFramesLeft = ATTACK_FRAMES; //number of frames to play at each attack
+}
 
             scene.repaint();
+        
+            }
         }
-    }
+
 
     public JPanel getPanel() {
         return scene.getPanel();

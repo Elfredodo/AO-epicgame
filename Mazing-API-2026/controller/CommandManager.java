@@ -7,6 +7,7 @@ import java.util.Queue;
 public class CommandManager {
     private final Queue<Command> bagOfCommands;
     private boolean isRunning;
+    
 
     public CommandManager() {
         this.bagOfCommands = new LinkedList<>();
