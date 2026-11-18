@@ -14,6 +14,12 @@ public class CrusaderModel implements Subject{
     private final List<Observer> observers;
     private boolean attacking; 
 
+    //For the collision detection, we define the boundaries of the grid where the crusader can move
+    private static final double MIN_X = -0.5;
+    private static final double MAX_X = 9.5;
+    private static final double MIN_Y = -0.5;
+    private static final double MAX_Y = 9.5;
+
     public CrusaderModel(double startX, double startY, double startZ) {
         this.x = startX;
         this.y = startY;
@@ -24,9 +30,18 @@ public class CrusaderModel implements Subject{
     }
 
     public void move(double dx, double dy, Orientation newOrientation) {
-        this.x += dx;
-        this.y += dy;
+        double nextX = this.x + dx;
+        double nextY = this.y + dy;
+
+        // Update the orientation 
         this.orientation = newOrientation;
+
+        // Check if the next position is within the defined boundaries before updating the position
+        if (nextX >= MIN_X && nextX <= MAX_X && nextY >= MIN_Y && nextY <= MAX_Y) {
+            this.x = nextX;
+            this.y = nextY;
+        }
+
         this.moving = true;
         notifyObservers();
     }
