@@ -11,10 +11,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import model.SpiderModel;
+
+
 public class GameController {
     private final CrusaderModel model;
     private final CommandManager commandManager;
     private static final double STEP = 0.2; // Speed of the crusader's movement per command
+    
 
     public GameController(CrusaderModel model, GameView view) {
         this.model = model;

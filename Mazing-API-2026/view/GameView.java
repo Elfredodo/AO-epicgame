@@ -9,7 +9,12 @@ import fr.ubordeaux.ao.mazing.view.sprite.AnimatedSprites;
 import fr.ubordeaux.ao.mazing.view.sprite.IsometricSprites;
 import model.CrusaderModel;
 import model.Observer;
+import model.SpiderModel;
 import model.Subject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -21,9 +26,10 @@ public class GameView implements Observer {
     private boolean currentlyAttacking = false;
     private int attackFramesLeft = 0;
     private static final int ATTACK_FRAMES = 15; // number of frames to play during attack 
+    private final Map<SpiderModel, AnimatedEntity> spiderEntities = new HashMap<>(); //spider models and their corresponding animated entities
 
 
-    public GameView(CrusaderModel model) {
+    public GameView(CrusaderModel model, List<SpiderModel> spiderModels) {
         // Create the scene (window width, window height, grid width, grid height)
         this.scene = new Scene(1024, 768, 12, 12);
         //this.footstepSound = new FootstepSound();
@@ -43,6 +49,24 @@ public class GameView implements Observer {
             (int) model.getY(),
             (int) model.getZ()
         );
+
+        for (SpiderModel spider : spiderModels) {
+            AnimatedEntity spiderEntity = new AnimatedEntity(
+                AnimatedSprites.SPIDER_WALK,
+                spider.getOrientation(),
+                (int) spider.getX(),
+                (int) spider.getY(),
+                (int) spider.getZ()
+            );
+            // position the spider entity based on the model's coordinates
+            spiderEntity.setPosition(spider.getX(), spider.getY(), spider.getZ());
+            
+            // pause the spider  animation if it is not moving
+            spiderEntity.setAnimationPaused(!spider.isMoving());
+
+            spiderEntities.put(spider, spiderEntity);
+            scene.addRenderable(spiderEntity);
+        }
 
         scene.addRenderable(crusaderEntity);
         scene.show();
@@ -83,15 +107,32 @@ public class GameView implements Observer {
             if (model.isAttacking() && attackFramesLeft == 0) {
                 crusaderEntity.setSprite(AnimatedSprites.CRUSADER_ATTACK);
                 attackFramesLeft = ATTACK_FRAMES; //number of frames to play at each attack
-}
-
-            scene.repaint();
-        
             }
-        }
+            scene.repaint();
 
+        } else if (subject instanceof SpiderModel spider) {
+            AnimatedEntity entity = spiderEntities.get(spider);
+                if (entity != null) {
+                    entity.setOrientation(spider.getOrientation());
+                    entity.setPosition(spider.getX(), spider.getY(), spider.getZ());
+
+                    if (spider.isDead()) {
+                        entity.setSprite(AnimatedSprites.SPIDER_DEATH);
+                        entity.setAnimationPaused(false);
+                    } else if (spider.isAttacking()) {
+                        entity.setSprite(AnimatedSprites.SPIDER_ATTACK);
+                        entity.setAnimationPaused(false);
+                    } else {
+                        entity.setSprite(AnimatedSprites.SPIDER_WALK);
+                        entity.setAnimationPaused(!spider.isMoving());
+                    }
+                    scene.repaint();
+                }
+        }
+    }
 
     public JPanel getPanel() {
         return scene.getPanel();
     }
+
 }
