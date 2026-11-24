@@ -38,22 +38,23 @@ public class GameController {
         panel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (Character.toLowerCase(e.getKeyChar())) {
-                    case 'w' -> commandManager.addCommand(() -> 
+                int keyCode = e.getKeyCode();
+                switch (keyCode) {
+                    case KeyEvent.VK_UP -> commandManager.addCommand(() -> 
                         model.move(0, STEP, Orientation.NORTH));
-                    case 's' -> commandManager.addCommand(() -> 
+                    case KeyEvent.VK_DOWN -> commandManager.addCommand(() -> 
                         model.move(0, -STEP, Orientation.SOUTH));
-                    case 'd' -> commandManager.addCommand(() -> 
+                    case KeyEvent.VK_RIGHT -> commandManager.addCommand(() -> 
                         model.move(STEP, 0, Orientation.EAST));
-                    case 'a' -> commandManager.addCommand(() -> 
+                    case KeyEvent.VK_LEFT -> commandManager.addCommand(() -> 
                         model.move(-STEP, 0, Orientation.WEST));
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                char c = Character.toLowerCase(e.getKeyChar());
-                if (c == 'w' || c == 'a' || c == 's' || c == 'd') {
+                int keyCode = e.getKeyCode();
+                if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_LEFT) {
                     commandManager.addCommand(model::stop);
                 }
             }
