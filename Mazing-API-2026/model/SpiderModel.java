@@ -4,6 +4,8 @@ import fr.ubordeaux.ao.mazing.view.Orientation;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.CrusaderModel;
+
 public class SpiderModel implements Subject {
     private double x;
     private double y;
@@ -25,7 +27,8 @@ public class SpiderModel implements Subject {
         this.dead = false;
 
         this.observers = new ArrayList<>();
-    }
+}
+    
 
     public double getX() { 
         return x; 
@@ -45,6 +48,57 @@ public class SpiderModel implements Subject {
     public boolean isMoving() { 
         return moving; 
     }
+
+    public void moveTowards(CrusaderModel model) {
+        double distance_x = model.getX() - this.x; 
+        double distance_y = model.getY()-this.y; 
+
+        double distance = Math.sqrt(distance_x * distance_x + distance_y * distance_y);
+
+        if (distance > 0.5) {
+            double speed = 0.1;
+
+            this.x += (distance_x / distance) * speed;
+            this.y += (distance_y / distance) * speed;
+
+        // To implement ; attack when close 
+
+
+            // Déterminer la direction
+            if (Math.abs(distance_x) > Math.abs(distance_y)) {
+                if (distance_x > 0) {
+                    setOrientation(Orientation.EAST);
+                } else {
+                    setOrientation(Orientation.WEST);
+                }
+            } else {
+                if (distance_y > 0) {
+                    setOrientation(Orientation.SOUTH);
+                } else {
+                    setOrientation(Orientation.NORTH);
+                }
+            }
+
+            this.moving = true ; 
+
+            notifyObservers();
+        }
+        
+            else {
+
+                this.moving = false ; 
+
+                notifyObservers(); 
+            }
+    
+}
+
+
+    public void setOrientation (Orientation orientation) {
+        this.orientation = orientation ; 
+
+    }
+
     public boolean isAttacking() { 
         return attacking; 
     

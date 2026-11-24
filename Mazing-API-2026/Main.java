@@ -1,4 +1,5 @@
 import controller.GameController;
+import controller.SpiderController;
 import model.CrusaderModel;
 import model.SpiderModel;
 import view.GameView;
@@ -26,6 +27,7 @@ public class Main {
             }
 
             new GameController(model, view);
+            new SpiderController(spiders, model);
         });
     }
 }
