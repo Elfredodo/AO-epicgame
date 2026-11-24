@@ -2,7 +2,10 @@ package controller;
 
 
 import model.CrusaderModel;
+import model.Observer;
 import model.SpiderModel;
+import model.Subject;
+
 import java.util.List;
 import javax.swing.Timer;
 
@@ -17,8 +20,9 @@ import java.util.List;
 import java.util.Map;
 import model.SpiderModel;
 
-public class SpiderController {
+public class SpiderController implements Observer {
 
+    private static final double ATTACK_RANGE = 1.5;
     private final List<SpiderModel> spiders;
     private final CrusaderModel model;
 
@@ -26,6 +30,8 @@ public class SpiderController {
 
         this.spiders = spiders;
         this.model = model;
+
+        this.model.addObserver(this);
 
         // Moving every 300s
         Timer timer = new Timer(300, e -> moveSpiders());
@@ -50,5 +56,28 @@ public class SpiderController {
                 spider.moveTowards(model);
             }
         }
-    }   
+    }
+    
+    @Override
+    public void update(Subject subject) {
+        if (subject instanceof CrusaderModel crusader && crusader.isAttacking()) {
+            checkSpiderHits();
+        }
+    }
+
+    private void checkSpiderHits() {
+        for (SpiderModel spider : spiders) {
+            if (spider.isDead()) {
+                continue;
+            }
+            double dx = model.getX() - spider.getX();
+            double dy = model.getY() - spider.getY();
+            double distance = Math.hypot(dx, dy);
+
+            if (distance <= ATTACK_RANGE) {
+                spider.die();
+            }
+        }
+    }
+
 }

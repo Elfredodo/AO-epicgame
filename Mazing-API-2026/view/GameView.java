@@ -117,8 +117,19 @@ public class GameView implements Observer {
                     entity.setPosition(spider.getX(), spider.getY(), spider.getZ());
 
                     if (spider.isDead()) {
-                        entity.setSprite(AnimatedSprites.SPIDER_DEATH);
-                        entity.setAnimationPaused(false);
+                        if (entity.getSprite() != AnimatedSprites.SPIDER_DEATH) {
+                            entity.setSprite(AnimatedSprites.SPIDER_DEATH);
+                            entity.setAnimationPaused(false);
+
+                            int lastFrame = AnimatedSprites.SPIDER_DEATH.animationSize() - 1;
+                            entity.setAnimationFrameListener(frame -> {
+                                if (frame >= lastFrame) {
+                                    entity.setAnimationPaused(true);
+                                    // Si quieres que desaparezca del mapa al morir, descomenta la siguiente línea:
+                                    // scene.removeRenderable(entity);
+                                }
+                            });
+                        }
                     } else if (spider.isAttacking()) {
                         entity.setSprite(AnimatedSprites.SPIDER_ATTACK);
                         entity.setAnimationPaused(false);

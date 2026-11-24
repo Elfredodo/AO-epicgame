@@ -91,7 +91,16 @@ public class SpiderModel implements Subject {
                 notifyObservers(); 
             }
     
-}
+    }
+
+    public void die() {
+        if (!this.dead) {
+            this.dead = true;
+            this.moving = false;
+            this.attacking = false;
+            notifyObservers();
+        }
+    }
 
 
     public void setOrientation (Orientation orientation) {
