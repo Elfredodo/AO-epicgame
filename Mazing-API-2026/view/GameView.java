@@ -3,8 +3,11 @@ package view;
 import fr.ubordeaux.ao.mazing.Scene;
 import fr.ubordeaux.ao.mazing.view.Orientation;
 import fr.ubordeaux.ao.mazing.view.entity.AnimatedEntity;
+import fr.ubordeaux.ao.mazing.view.entity.OccludingEntity;
+import fr.ubordeaux.ao.mazing.view.entity.Entity;
 import fr.ubordeaux.ao.mazing.view.entity.FloorTile;
 //import fr.ubordeaux.ao.mazing.view.sound.FootstepSound;
+import java.util.Random;
 import fr.ubordeaux.ao.mazing.view.sprite.AnimatedSprites;
 import fr.ubordeaux.ao.mazing.view.sprite.IsometricSprites;
 import model.CrusaderModel;
@@ -40,6 +43,30 @@ public class GameView implements Observer {
                 scene.addRenderable(new FloorTile(IsometricSprites.STONE_TILE, Orientation.NORTH, x, y, 0));
             }
         }
+
+        // Murs
+
+        Random r = new Random(); 
+
+         for (int x = 0; x < 10; x++) {
+            for (int y = 0; y < 10; y++) {
+                scene.addRenderable(new OccludingEntity(IsometricSprites.STONE_WALL, Orientation.WEST, 0, y, 0));
+                scene.addRenderable(new OccludingEntity(IsometricSprites.STONE_WALL, Orientation.NORTH, x, 9, 0));
+            }
+
+            // caisse
+
+            int max_x=9,min_x=5; 
+            int max_y=5, min_y=1; 
+
+            Entity caisse = new Entity(IsometricSprites.WOODEN_CRATE, Orientation.NORTH,r.nextInt(r.nextInt(max_x - min_x + 1) + min_x), r.nextInt(r.nextInt(max_y - min_y + 1) + min_y), 0);scene.addRenderable(caisse);
+            Entity caiss_2 = new Entity(IsometricSprites.WOODEN_CRATE, Orientation.NORTH,r.nextInt(r.nextInt(max_x - min_x + 1) + min_x), r.nextInt(r.nextInt(max_y - min_y + 1) + min_y), 0);scene.addRenderable(caisse);
+
+        }
+
+    
+
+
 
         // Instantiate the crusader entity with the initial position and orientation from the model
         this.crusaderEntity = new AnimatedEntity(

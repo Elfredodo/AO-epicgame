@@ -73,13 +73,14 @@ public class SpiderModel implements Subject {
                 }
             } else {
                 if (distance_y > 0) {
-                    setOrientation(Orientation.SOUTH);
-                } else {
                     setOrientation(Orientation.NORTH);
+                } else {
+                    setOrientation(Orientation.SOUTH);
                 }
             }
 
             this.moving = true ; 
+            this.attacking = false ; 
 
             notifyObservers();
         }
@@ -87,6 +88,7 @@ public class SpiderModel implements Subject {
             else {
 
                 this.moving = false ; 
+                this.attacking = true ; 
 
                 notifyObservers(); 
             }
