@@ -7,6 +7,9 @@ import java.util.List;
 import model.CrusaderModel;
 
 public class SpiderModel implements Subject {
+    private static int nextID = 0;
+    private final int id;
+
     private double x;
     private double y;
     private double z;
@@ -17,6 +20,7 @@ public class SpiderModel implements Subject {
     private final List<Observer> observers;
 
     public SpiderModel(double startX, double startY, double startZ, Orientation orientation) {
+        this.id = nextId++;
         this.x = startX;
         this.y = startY;
         this.z = startZ;
@@ -25,9 +29,8 @@ public class SpiderModel implements Subject {
         this.moving = false;
         this.attacking = false;
         this.dead = false;
-
         this.observers = new ArrayList<>();
-}
+    }
     
 
     public double getX() { 
@@ -82,7 +85,7 @@ public class SpiderModel implements Subject {
             this.moving = true ; 
             this.attacking = false ; 
 
-            notifyObservers();
+            notifyMoved();
         }
         
             else {
@@ -90,7 +93,7 @@ public class SpiderModel implements Subject {
                 this.moving = false ; 
                 this.attacking = true ; 
 
-                notifyObservers(); 
+                notifyAttacked(); 
             }
     
     }
@@ -100,7 +103,7 @@ public class SpiderModel implements Subject {
             this.dead = true;
             this.moving = false;
             this.attacking = false;
-            notifyObservers();
+            notifyDied();
         }
     }
 
@@ -123,10 +126,37 @@ public class SpiderModel implements Subject {
         observers.add(observer);
     }
 
+    /* 
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
             observer.update(this);
         }
     }
+     */
+    //Now there is more types of notifications
+    public void notifyCreated() {
+        for (Observer observer : observers) {
+            observer.onSpiderCreated(this.id, this.x, this.y, this.z, this.orientation);
+        }
+    }
+
+    private void notifyMoved() {
+        for (Observer observer : observers) {
+            observer.onSpiderMoved(this.id, this.x, this.y, this.z, this.orientation);
+        }
+    }
+
+    private void notifyAttacked() {
+        for (Observer observer : observers) {
+            observer.onSpiderAttacked(this.id, this.orientation);
+        }
+    }
+
+    private void notifyDied() {
+        for (Observer observer : observers) {
+            observer.onSpiderDied(this.id);
+        }
+    }
+
 }

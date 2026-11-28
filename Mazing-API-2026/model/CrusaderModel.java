@@ -2,6 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.plaf.TreeUI;
+
 import fr.ubordeaux.ao.mazing.view.Orientation;
 
 public class CrusaderModel implements Subject{
@@ -11,8 +14,9 @@ public class CrusaderModel implements Subject{
     private double z;
     private Orientation orientation;
     private boolean moving;
-    private final List<Observer> observers;
     private boolean attacking; 
+    private final List<Observer> observers;
+
 
     //For the collision detection, we define the boundaries of the grid where the crusader can move
     private static final double MIN_X = -0.5;
@@ -26,6 +30,7 @@ public class CrusaderModel implements Subject{
         this.z = startZ;
         this.orientation = Orientation.SOUTH;
         this.moving = false;
+        this.attacking = false;
         this.observers = new ArrayList<>();
     }
 
@@ -43,7 +48,7 @@ public class CrusaderModel implements Subject{
         }
 
         this.moving = true;
-        notifyObservers();
+        notifyMoved();
     }
 
     public void stop() {
@@ -54,15 +59,18 @@ public class CrusaderModel implements Subject{
     }
 
     public void attack(boolean hit){
-        this.attacking = hit; 
-        notifyObservers(); 
+        if (hit && !this.attacking) {
+            this.attacking = true;
+            notifyAttackStarted();
+        } else if (!hit){
+            this.attacking = false;
+        }
+        
     }
 
     public void stopAttack() {
-        if (this.attacking) {
-            this.attacking = false; 
-            notifyObservers();
-        }
+        this.attacking = false;
+    
     }
 
     public double getX() { return x; }
@@ -77,10 +85,35 @@ public class CrusaderModel implements Subject{
         observers.add(observer);
     }
 
+    /* 
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
             observer.update(this);
+        }
+    }
+    */
+   public void notifyCreated() {
+        for (Observer observer : observers) {
+            observer.onCrusaderCreated(this.x, this.y, this.z, this.orientation);
+        }
+    }
+
+    private void notifyMoved() {
+        for (Observer observer : observers) {
+            observer.onCrusaderMoved(this.x, this.y, this.z, this.orientation);
+        }
+    }
+
+    private void notifyStopped() {
+        for (Observer observer : observers) {
+            observer.onCrusaderStopped();
+        }
+    }
+
+    private void notifyAttackStarted() {
+        for (Observer observer : observers) {
+            observer.onCrusaderAttackStarted();
         }
     }
 }

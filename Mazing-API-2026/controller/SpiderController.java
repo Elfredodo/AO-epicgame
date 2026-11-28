@@ -16,9 +16,7 @@ import view.GameView;
 
 import javax.swing.JPanel;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import model.SpiderModel;
 
 public class SpiderController implements Observer {
 
@@ -59,10 +57,8 @@ public class SpiderController implements Observer {
     }
     
     @Override
-    public void update(Subject subject) {
-        if (subject instanceof CrusaderModel crusader && crusader.isAttacking()) {
-            checkSpiderHits();
-        }
+    public void onCrusaderAttackStarted() {
+        checkSpiderHits();
     }
 
     private void checkSpiderHits() {

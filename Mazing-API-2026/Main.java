@@ -19,11 +19,12 @@ public class Main {
             SpiderModel sp2 = new SpiderModel(8.0, 3.0, 0.0, Orientation.SOUTH_WEST);
             List<SpiderModel> spiders = List.of(sp1, sp2);
             
-            GameView view = new GameView(model, spiders);
+            GameView view = new GameView();
 
             //add the view as an observer to each spider model
             for (SpiderModel spider : spiders) {
                 spider.addObserver(view);
+                spider.notifyCreated();
             }
 
             new GameController(model, view);

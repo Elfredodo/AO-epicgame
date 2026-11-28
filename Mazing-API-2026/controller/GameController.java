@@ -29,6 +29,8 @@ public class GameController {
 
         // the controller observes the model and updates the view accordingly
         this.model.addObserver(view);
+        this.model.notifyCreated();
+        view.setOnAttackFinished(() -> commandManager.addCommand(model::stopAttack));
 
         // captures keyboard input from the view and translates it into commands for the model
         JPanel panel = view.getPanel();
@@ -61,14 +63,14 @@ public class GameController {
         });
 
         panel.addMouseListener(new MouseAdapter() {
-            @Override 
-            public void mouseClicked(MouseEvent e) {
+            @Override
+            public void mousePressed(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     commandManager.addCommand(() -> model.attack(true));
                 }
             }
 
-             @Override
+            @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     commandManager.addCommand(() -> model.attack(false));
